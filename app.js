@@ -16,6 +16,22 @@ const sidebarToggle = document.querySelector("#sidebarToggle");
 sidebarToggle?.addEventListener("click", () => {
   sidebar?.classList.toggle("open");
 });
+document.addEventListener("click", (event) => {
+  const sidebar = document.querySelector(".sidebar");
+  const toggle = document.querySelector("#sidebarToggle");
+
+  if (
+    sidebar &&
+    toggle &&
+    window.innerWidth <= 768 &&
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !toggle.contains(event.target)
+  ) {
+    sidebar.classList.remove("open");
+  }
+});
+
 
 let requestCounter = 0;
 let activeRequests = 0;
