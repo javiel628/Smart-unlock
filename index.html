@@ -3,99 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#080d18">
+  <meta name="description" content="SMART UNLOCK Device Service Dashboard">
+
   <title>SMART UNLOCK | Device Service Dashboard</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="app">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
+
+      <!-- SINGLE SMART UNLOCK LOGO -->
       <div class="brand">
-        <div class="brand-icon">S</div>
-        <div>
-          <h2>SMART UNLOCK</h2>
+
+        <svg
+          class="brand-logo"
+          viewBox="0 0 64 64"
+          role="img"
+          aria-label="SMART UNLOCK logo"
+        >
+          <defs>
+            <linearGradient id="logoGlow" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#35f1ff"/>
+              <stop offset="100%" stop-color="#477cff"/>
+            </linearGradient>
+          </defs>
+
+          <rect
+            x="3"
+            y="3"
+            width="58"
+            height="58"
+            rx="16"
+            fill="#101c2d"
+            stroke="#244d70"
+            stroke-width="1.5"
+          />
+
+          <path
+            d="M21 29v-7a11 11 0 0 1 22 0v7"
+            fill="none"
+            stroke="url(#logoGlow)"
+            stroke-width="5"
+            stroke-linecap="round"
+          />
+
+          <rect
+            x="15"
+            y="27"
+            width="34"
+            height="26"
+            rx="7"
+            fill="url(#logoGlow)"
+          />
+
+          <circle cx="32" cy="38" r="4" fill="#07111e"/>
+
+          <path
+            d="M32 41v5"
+            stroke="#07111e"
+            stroke-width="3"
+            stroke-linecap="round"
+          />
+        </svg>
+
+        <div class="brand-copy">
+          <h2>SMART <span>UNLOCK</span></h2>
           <span>DEVICE SERVICE PORTAL</span>
         </div>
-          </div>
-      <div class="brand">
-  <img src="logo.png" alt="SMART UNLOCK Logo" class="brand-logo">
-  <div>
 
+      </div>
+
+      <!-- NAVIGATION -->
       <div class="nav-label">WORKSPACE</div>
-      <a href="#dashboard" class="nav-item active">▦ Dashboard</a>
-      <a href="#request" class="nav-item">＋ New Request</a>
-      <a href="#history" class="nav-item">◷ Request History</a>
-      <a href="#logs" class="nav-item">⌘ System Logs</a>
 
+      <a href="#dashboard" class="nav-item active">
+        ▦ Dashboard
+      </a>
+
+      <a href="#request" class="nav-item">
+        ＋ New Request
+      </a>
+
+      <a href="#history" class="nav-item">
+        ◷ Request History
+      </a>
+
+      <a href="#logs" class="nav-item">
+        ⌘ System Logs
+      </a>
+
+      <!-- SIDEBAR FOOTER -->
       <div class="sidebar-bottom">
+
         <div class="service-status">
           <span class="status-dot"></span>
+
           <div>
             <strong>Demo Service Online</strong>
             <small>Simulation environment</small>
           </div>
         </div>
-        <p class="developer">DEVELOPED BY<br>
+
+        <p class="developer">
+          DEVELOPED BY<br>
           <strong>𝙳𝙰𝚁𝙺𝚆𝙴𝙱.𝙾𝚁𝙶</strong>
         </p>
+
       </div>
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="main">
+
+      <!-- TOP HEADER -->
       <header class="topbar">
-        <button class="menu-btn" id="menuBtn">☰</button>
+
+        <button
+          class="menu-btn"
+          id="menuBtn"
+          type="button"
+          aria-label="Toggle navigation"
+        >
+          ☰
+        </button>
+
         <div>
           <span class="eyebrow">DEVICE MANAGEMENT</span>
           <h1 id="dashboard">Dashboard</h1>
         </div>
+
         <div class="topbar-right">
           <span class="demo-pill">DEMO MODE</span>
           <div class="avatar">S</div>
         </div>
+
       </header>
 
+      <!-- WELCOME / TYPING SVG SECTION -->
       <section class="welcome">
-        <div>
-          <h2>Welcome to Smart Unlock</h2>
-          <p>Manage device service requests from one dashboard.</p>
+
+        <div class="welcome-content">
+
+          <span class="eyebrow">
+            SMART DEVICE MANAGEMENT
+          </span>
+
+          <h2>
+            Welcome to
+            <span class="gradient-text">SMART UNLOCK</span>
+          </h2>
+
+          <div class="typing-line">
+
+            <!-- SVG TERMINAL ICON -->
+            <svg
+              class="typing-svg"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 5h16v14H4z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+
+              <path
+                d="m7 9 3 3-3 3M12 15h5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <!-- ANIMATED TYPING TEXT -->
+            <span class="typing-text">
+              <span>Smart Device Services</span>
+              <span>IMEI Demo Check</span>
+              <span>Live Activity Monitor</span>
+              <span>Device Service Dashboard</span>
+            </span>
+
+          </div>
+
+          <p>
+            Manage device service requests from one dashboard.
+          </p>
+
         </div>
-        <span class="live-label"><span class="status-dot"></span> SYSTEM ONLINE</span>
+
+        <span class="live-label">
+          <span class="status-dot"></span>
+          SYSTEM ONLINE
+        </span>
+
       </section>
 
+      <!-- STATISTICS -->
       <section class="stats">
+
         <article class="stat-card">
-          <div class="stat-top"><span>Total Requests</span><span>▦</span></div>
+          <div class="stat-top">
+            <span>Total Requests</span>
+            <span>▦</span>
+          </div>
+
           <strong id="totalRequests">0</strong>
           <small>All demo requests</small>
         </article>
+
         <article class="stat-card">
-          <div class="stat-top"><span>Completed</span><span>✓</span></div>
+          <div class="stat-top">
+            <span>Completed</span>
+            <span>✓</span>
+          </div>
+
           <strong id="completedRequests">0</strong>
           <small>Simulated completion</small>
         </article>
+
         <article class="stat-card">
-          <div class="stat-top"><span>Pending</span><span>◷</span></div>
+          <div class="stat-top">
+            <span>Pending</span>
+            <span>◷</span>
+          </div>
+
           <strong id="pendingRequests">0</strong>
           <small>Currently processing</small>
         </article>
+
         <article class="stat-card">
-          <div class="stat-top"><span>Failed</span><span>×</span></div>
+          <div class="stat-top">
+            <span>Failed</span>
+            <span>×</span>
+          </div>
+
           <strong id="failedRequests">0</strong>
           <small>Demo errors</small>
         </article>
+
       </section>
 
+      <!-- REQUEST CONSOLE AND LOGS -->
       <div class="content-grid">
+
+        <!-- NEW REQUEST -->
         <section class="panel request-panel" id="request">
+
           <div class="panel-heading">
+
             <div>
               <span class="eyebrow">SERVICE CONSOLE</span>
               <h2>New Device Request</h2>
             </div>
+
             <span class="panel-icon">⌁</span>
+
           </div>
 
           <form id="requestForm">
-            <label for="brand">Device brand</label>
+
+            <label for="brand">
+              Device brand
+            </label>
+
             <select id="brand" required>
               <option value="">Select brand</option>
               <option>Samsung</option>
@@ -114,71 +294,156 @@
               <option>Other</option>
             </select>
 
-            <label for="model">Device model</label>
-            <input id="model" placeholder="e.g. Galaxy A15" required>
+            <label for="model">
+              Device model
+            </label>
 
-            <label for="imei">IMEI number</label>
+            <input
+              id="model"
+              type="text"
+              placeholder="e.g. Galaxy A15"
+              required
+            >
+
+            <label for="imei">
+              IMEI number
+            </label>
+
             <div class="input-row">
-              <input id="imei" inputmode="numeric" maxlength="15"
-                placeholder="Enter 15-digit IMEI" required>
-              <button type="button" class="secondary-btn" id="pasteBtn">Paste</button>
-            </div>
-            <small class="field-note">IMEI is validated locally for demo purposes.</small>
 
-            <label for="service">Service type</label>
+              <input
+                id="imei"
+                type="text"
+                inputmode="numeric"
+                maxlength="15"
+                placeholder="Enter 15-digit IMEI"
+                required
+              >
+
+              <button
+                type="button"
+                class="secondary-btn"
+                id="pasteBtn"
+              >
+                Paste
+              </button>
+
+            </div>
+
+            <small class="field-note">
+              IMEI is validated locally for demo purposes.
+            </small>
+
+            <label for="service">
+              Service type
+            </label>
+
             <select id="service" required>
-              <option value="Device status check">Device status check</option>
-              <option value="Network compatibility check">Network compatibility check</option>
-              <option value="Service eligibility check">Service eligibility check</option>
+              <option value="Device status check">
+                Device status check
+              </option>
+
+              <option value="Network compatibility check">
+                Network compatibility check
+              </option>
+
+              <option value="Service eligibility check">
+                Service eligibility check
+              </option>
             </select>
 
-            <button type="submit" class="primary-btn" id="submitBtn">
-              <span>Start Request</span><span>→</span>
+            <button
+              type="submit"
+              class="primary-btn"
+              id="submitBtn"
+            >
+              <span>Start Request</span>
+              <span>→</span>
             </button>
+
           </form>
 
           <div class="notice">
             <strong>Demo environment</strong>
-            <p>This interface simulates a service workflow. It does not unlock, alter, or contact a phone or carrier.</p>
+
+            <p>
+              This interface simulates a service workflow.
+              It does not unlock, alter, or contact a phone or carrier.
+            </p>
           </div>
+
         </section>
 
+        <!-- ACTIVITY LOGS -->
         <section class="panel activity-panel" id="logs">
+
           <div class="panel-heading">
+
             <div>
               <span class="eyebrow">LIVE MONITOR</span>
               <h2>Activity Logs</h2>
             </div>
-            <button class="text-btn" id="clearLogs">Clear logs</button>
+
+            <button
+              class="text-btn"
+              id="clearLogs"
+              type="button"
+            >
+              Clear logs
+            </button>
+
           </div>
 
           <div class="log-status">
             <span class="status-dot"></span>
-            <span id="logStatus">Waiting for request</span>
-            <span class="log-live">LIVE</span>
+
+            <span id="logStatus">
+              Waiting for request
+            </span>
+
+            <span class="log-live">
+              LIVE
+            </span>
           </div>
 
           <div class="logs" id="logsContainer">
+
             <div class="empty-state">
               <div class="empty-icon">⌘</div>
+
               <strong>No activity yet</strong>
-              <p>Logs will appear here when you start a demo request.</p>
+
+              <p>
+                Logs will appear here when you start a demo request.
+              </p>
             </div>
+
           </div>
+
         </section>
+
       </div>
 
+      <!-- REQUEST HISTORY -->
       <section class="panel history-panel" id="history">
+
         <div class="panel-heading">
+
           <div>
             <span class="eyebrow">REQUEST MANAGEMENT</span>
             <h2>Request History</h2>
           </div>
-          <span class="history-count" id="historyCount">0 records</span>
+
+          <span class="history-count" id="historyCount">
+            0 records
+          </span>
+
         </div>
 
         <div class="table-wrap">
+
           <table>
+
             <thead>
               <tr>
                 <th>REQUEST ID</th>
@@ -188,23 +453,38 @@
                 <th>STATUS</th>
               </tr>
             </thead>
+
             <tbody id="historyBody">
+
               <tr class="empty-row">
-                <td colspan="5">No requests have been submitted.</td>
+                <td colspan="5">
+                  No requests have been submitted.
+                </td>
               </tr>
+
             </tbody>
+
           </table>
+
         </div>
+
       </section>
 
+      <!-- FOOTER -->
       <footer>
-        SMART UNLOCK · DEMO SERVICE PORTAL
+        <span>SMART UNLOCK · DEMO SERVICE PORTAL</span>
         <span>All processing shown is simulated.</span>
       </footer>
+
     </main>
+
   </div>
 
+  <!-- TOAST NOTIFICATION -->
   <div class="toast" id="toast"></div>
+
+  <!-- JAVASCRIPT -->
   <script src="app.js"></script>
+
 </body>
 </html>
