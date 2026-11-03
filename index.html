@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d16">
+  <title>SMART UNLOCK — Device Service Console</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="SMART UNLOCK home">
+        <span class="brand-mark">✦</span>
+        <span><b>SMART</b><strong>UNLOCK</strong><small>DEVICE SERVICE CONSOLE</small></span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <nav>
+        <a class="nav-item active" href="#overview"><span>▦</span> Overview</a>
+        <a class="nav-item" href="#checker"><span>⌕</span> IMEI Checker</a>
+        <a class="nav-item" href="#activity"><span>≋</span> Activity Logs</a>
+        <a class="nav-item" href="#settings"><span>⚙</span> Settings</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="server-state"><i></i><span><b>Demo server</b><small>Interface preview mode</small></span></div>
+        <div class="developer">DEVELOPED BY<br><b>𝙳𝙰𝚁𝙺𝚆𝙴𝙱.𝙾𝚁𝙶</b></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+        <div><span class="eyebrow">DEVICE OPERATIONS</span><h1>Control Center</h1></div>
+        <div class="top-actions"><span class="mode-pill"><i></i> DEMO MODE</span><button class="icon-btn" id="notifyBtn" aria-label="Show notifications">♧<span class="dot"></span></button><div class="avatar">DW</div></div>
+      </header>
+
+      <section id="overview" class="stats-grid">
+        <article class="stat-card"><div class="stat-top"><span>Requests today</span><span class="stat-icon blue">↗</span></div><div class="stat-value" id="requestCount">128</div><div class="stat-foot"><span class="muted">Demo activity</span><span class="trend">+12.4%</span></div><div class="mini-bars"><i style="height:35%"></i><i style="height:54%"></i><i style="height:44%"></i><i style="height:72%"></i><i style="height:58%"></i><i style="height:86%"></i><i style="height:66%"></i><i style="height:100%"></i></div></article>
+        <article class="stat-card"><div class="stat-top"><span>Completed checks</span><span class="stat-icon green">✓</span></div><div class="stat-value">96</div><div class="stat-foot"><span class="muted">Demo-only count</span><span class="trend">+8.2%</span></div><div class="progress"><i style="width:75%"></i></div></article>
+        <article class="stat-card"><div class="stat-top"><span>Needs review</span><span class="stat-icon amber">!</span></div><div class="stat-value">12</div><div class="stat-foot"><span class="muted">Sample records</span><span class="warn">Review</span></div><div class="progress amber-progress"><i style="width:28%"></i></div></article>
+        <article class="stat-card"><div class="stat-top"><span>Service status</span><span class="stat-icon green">⌁</span></div><div class="stat-value status-value"><i></i> Ready</div><div class="stat-foot"><span class="muted">Local demo interface</span><span class="muted">v1.0</span></div><div class="status-line"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel checker-panel" id="checker">
+          <div class="panel-heading"><div><span class="eyebrow">DEVICE LOOKUP</span><h2>Check device status</h2><p>Validate an IMEI and preview the service workflow.</p></div><span class="panel-symbol">⌕</span></div>
+          <form id="checkForm">
+            <label for="imei">IMEI NUMBER <span>15 digits</span></label>
+            <div class="input-wrap"><span class="input-symbol">▣</span><input id="imei" name="imei" inputmode="numeric" maxlength="15" placeholder="Enter device IMEI" autocomplete="off"><button type="button" id="pasteBtn" class="paste-btn">PASTE</button></div>
+            <div class="field-row"><div><label for="brand">BRAND</label><select id="brand"><option value="">Select brand</option><option>Samsung</option><option>TECNO</option><option>Infinix</option><option>Xiaomi</option><option>Motorola</option><option>Other</option></select></div><div><label for="service">SERVICE</label><select id="service"><option>Device status check</option><option>Authorized unlock eligibility</option><option>IMEI format validation</option></select></div></div>
+            <div class="notice"><span>ⓘ</span><p>This is a UI demo. It does not contact a carrier, M-KOPA, or unlock a phone.</p></div>
+            <button class="primary-btn" type="submit"><span>▶</span> RUN DEMO CHECK <b>→</b></button>
+          </form>
+          <div class="result-card hidden" id="resultCard"><div class="result-head"><span class="result-check">✓</span><div><b id="resultTitle">Demo check complete</b><small id="resultSub">No device was changed.</small></div><span class="demo-tag">DEMO</span></div><div class="result-imei"><span>IMEI</span><code id="resultImei">—</code><button id="copyResult" type="button">COPY</button></div></div>
+        </article>
+
+        <article class="panel logs-panel" id="activity">
+          <div class="panel-heading logs-heading"><div><span class="eyebrow">LIVE CONSOLE</span><h2>Activity logs</h2><p>Workflow messages appear here in real time.</p></div><button id="clearLogs" class="text-btn">CLEAR LOGS</button></div>
+          <div class="terminal" id="terminal" aria-live="polite">
+            <div class="terminal-top"><span><i></i><i></i><i></i></span><small>smart-unlock / console</small><b>● LIVE</b></div>
+            <div class="log-lines" id="logLines"><p><time>10:39:01</time><span class="log-info">[INFO]</span> SMART UNLOCK interface initialized.</p><p><time>10:39:02</time><span class="log-ok">[READY]</span> Demo mode active — no external service connected.</p><p><time>10:39:03</time><span class="log-info">[INFO]</span> Waiting for user input...</p></div>
+            <div class="terminal-prompt"><span>›</span> <i>Awaiting command</i><b></b></div>
+          </div>
+          <div class="log-foot"><span><i></i> Local session</span><button id="copyLogs" class="text-btn">COPY LOGS ↗</button></div>
+        </article>
+      </section>
+
+      <section class="panel history-panel">
+        <div class="panel-heading"><div><span class="eyebrow">SESSION HISTORY</span><h2>Recent activity</h2></div><span class="history-count">DEMO RECORDS</span></div>
+        <div class="table-wrap"><table><thead><tr><th>REQUEST ID</th><th>DEVICE</th><th>IMEI (MASKED)</th><th>STATUS</th><th>TIME</th></tr></thead><tbody id="historyBody"><tr><td><b>#SU-0081</b></td><td>Samsung · Demo</td><td>•••••••••••421</td><td><span class="status-chip success">Completed</span></td><td>10:31:22</td></tr><tr><td><b>#SU-0080</b></td><td>TECNO · Demo</td><td>•••••••••••905</td><td><span class="status-chip pending">Review</span></td><td>10:28:14</td></tr><tr><td><b>#SU-0079</b></td><td>Infinix · Demo</td><td>•••••••••••173</td><td><span class="status-chip failed">Failed</span></td><td>10:21:09</td></tr></tbody></table></div>
+      </section>
+      <footer><span>SMART UNLOCK <b>·</b> Interface preview</span><span>DEVELOPED BY <b>𝙳𝙰𝚁𝙺𝚆𝙴𝙱.𝙾𝚁𝙶</b></span></footer>
+    </main>
+  </div>
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+  <div class="notification-pop hidden" id="notificationPop"><b>Notifications</b><p>You're all caught up.</p><small>SMART UNLOCK · Demo mode</small></div>
+  <script src="app.js"></script>
+</body>
+</html>
