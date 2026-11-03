@@ -10,6 +10,12 @@ const logsContainer = $("#logsContainer");
 const historyBody = $("#historyBody");
 const logStatus = $("#logStatus");
 const toast = $("#toast");
+const sidebar = document.querySelector(".sidebar");
+const sidebarToggle = document.querySelector("#sidebarToggle");
+
+sidebarToggle?.addEventListener("click", () => {
+  sidebar?.classList.toggle("open");
+});
 
 let requestCounter = 0;
 let activeRequests = 0;
