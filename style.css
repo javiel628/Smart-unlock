@@ -998,4 +998,60 @@ footer span {
   .welcome h2 {
     line-height: 1.4;
   }
+ /* Prevent page zooming / layout scaling */
+html {
+  zoom: 1;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  transform: none;
+  overflow-x: hidden;
+}
+
+/* Sidebar positioning */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  width: 260px;
+  z-index: 1000;
+  overflow-y: auto;
+  transition: transform 0.25s ease;
+}
+
+/* Sidebar closed state */
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+/* Main content */
+.main-content {
+  min-width: 0;
+  transition: margin-left 0.25s ease;
+}
+
+/* Mobile sidebar */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+}
+
+/* Prevent accidental horizontal scaling */
+* {
+  box-sizing: border-box;
+} 
+  
 }
