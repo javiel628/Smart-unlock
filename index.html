@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
 
   <meta name="theme-color" content="#080d18">
   <meta name="description" content="SMART UNLOCK Device Service Dashboard">
@@ -18,7 +22,7 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
 
-      <!-- SINGLE SMART UNLOCK LOGO -->
+      <!-- BRAND -->
       <div class="brand">
 
         <svg
@@ -79,6 +83,18 @@
 
       </div>
 
+      <!-- SIDEBAR BACK BUTTON -->
+      <button
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        type="button"
+        aria-label="Close sidebar"
+        aria-expanded="false"
+      >
+        <span aria-hidden="true">←</span>
+        <span>Back</span>
+      </button>
+
       <!-- NAVIGATION -->
       <div class="nav-label">WORKSPACE</div>
 
@@ -116,6 +132,7 @@
         </p>
 
       </div>
+
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -128,7 +145,8 @@
           class="menu-btn"
           id="menuBtn"
           type="button"
-          aria-label="Toggle navigation"
+          aria-label="Open navigation"
+          aria-expanded="false"
         >
           ☰
         </button>
@@ -145,7 +163,7 @@
 
       </header>
 
-      <!-- WELCOME / TYPING SVG SECTION -->
+      <!-- WELCOME SECTION -->
       <section class="welcome">
 
         <div class="welcome-content">
@@ -161,7 +179,6 @@
 
           <div class="typing-line">
 
-            <!-- SVG TERMINAL ICON -->
             <svg
               class="typing-svg"
               viewBox="0 0 24 24"
@@ -185,7 +202,6 @@
               />
             </svg>
 
-            <!-- ANIMATED TYPING TEXT -->
             <span class="typing-text">
               <span>Smart Device Services</span>
               <span>IMEI Demo Check</span>
