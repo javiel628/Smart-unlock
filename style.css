@@ -707,4 +707,19 @@ footer span {
   footer {
     flex-direction: column;
   }
+  .brand-logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  border-radius: 10px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px #29d8ed55);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 32px;
+}
 }
