@@ -1,510 +1,294 @@
+const $ = (selector) => document.querySelector(selector);
 
-(() => {
-  "use strict";
+const form = $("#requestForm");
+const brandInput = $("#brand");
+const modelInput = $("#model");
+const imeiInput = $("#imei");
+const serviceInput = $("#service");
+const submitBtn = $("#submitBtn");
+const logsContainer = $("#logsContainer");
+const historyBody = $("#historyBody");
+const logStatus = $("#logStatus");
+const toast = $("#toast");
 
-  const $ = (id) => document.getElementById(id);
+let requestCounter = 0;
+let activeRequests = 0;
+let completedRequests = 0;
+let failedRequests = 0;
+let historyRecords = [];
+let currentRequest = null;
+let toastTimer = null;
 
-  const form = $("checkForm");
-  const imeiInput = $("imei");
-  const logLines = $("logLines");
-  const toastStack = $("toastStack");
+function getTime() {
+  return new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+}
 
-  let requestCount = 128;
-  let requestId = 82;
+function getDate() {
+  return new Date().toLocaleString([], {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
 
-  // -------------------------------
-  // TIME
-  // -------------------------------
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("show");
 
-  const timeNow = () =>
-    new Date().toLocaleTimeString([], {
-      hour12: false,
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
 
-  // -------------------------------
-  // ACTIVITY LOGS
-  // -------------------------------
+function addLog(message, type = "") {
+  const emptyState = logsContainer.querySelector(".empty-state");
+  if (emptyState) emptyState.remove();
 
-  const addLog = (message, type = "info") => {
-    const p = document.createElement("p");
+  const line = document.createElement("div");
+  line.className = `log-line ${type}`;
 
-    const time = document.createElement("time");
-    time.textContent = timeNow();
+  const time = document.createElement("span");
+  time.className = "log-time";
+  time.textContent = getTime();
 
-    const tag = document.createElement("span");
+  const text = document.createElement("span");
+  text.className = "log-message";
+  text.textContent = message;
 
-    const labels = {
-      info: "[INFO]",
-      ok: "[READY]",
-      warn: "[WAIT]",
-      error: "[ERROR]"
-    };
+  line.append(time, text);
+  logsContainer.appendChild(line);
+  logsContainer.scrollTop = logsContainer.scrollHeight;
+}
 
-    tag.className = `log-${type}`;
-    tag.textContent = labels[type] || "[INFO]";
+function clearLogs() {
+  logsContainer.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">⌘</div>
+      <strong>No activity yet</strong>
+      <p>Logs will appear here when you start a demo request.</p>
+    </div>
+  `;
+  logStatus.textContent = "Waiting for request";
+}
 
-    p.append(
-      time,
-      tag,
-      document.createTextNode(message)
-    );
+function updateStats() {
+  $("#totalRequests").textContent = historyRecords.length + activeRequests;
+  $("#completedRequests").textContent = completedRequests;
+  $("#pendingRequests").textContent = activeRequests;
+  $("#failedRequests").textContent = failedRequests;
+  $("#historyCount").textContent =
+    `${historyRecords.length} record${historyRecords.length === 1 ? "" : "s"}`;
+}
 
-    logLines.appendChild(p);
+function maskImei(imei) {
+  return `${imei.slice(0, 4)}••••••${imei.slice(-5)}`;
+}
 
-    logLines.scrollTop = logLines.scrollHeight;
-  };
+function isValidImei(imei) {
+  if (!/^\d{15}$/.test(imei)) return false;
 
-  // -------------------------------
-  // STYLISH NOTIFICATIONS
-  // -------------------------------
+  let sum = 0;
 
-  const toast = (
-    title,
-    message,
-    type = "info"
-  ) => {
-    const node = document.createElement("div");
+  for (let i = 0; i < imei.length; i++) {
+    let digit = Number(imei[i]);
 
-    node.className =
-      `toast ${
-        type === "ok"
-          ? "success-toast"
-          : type === "error"
-          ? "error-toast"
-          : ""
-      }`;
-
-    const icon = document.createElement("span");
-
-    icon.className = "toast-icon";
-
-    icon.textContent =
-      type === "ok"
-        ? "✓"
-        : type === "error"
-        ? "!"
-        : "✦";
-
-    const body = document.createElement("div");
-
-    const strong = document.createElement("b");
-    strong.textContent = title;
-
-    const small = document.createElement("small");
-    small.textContent = message;
-
-    body.append(strong, small);
-
-    node.append(icon, body);
-
-    toastStack.appendChild(node);
-
-    window.setTimeout(() => {
-      node.remove();
-    }, 4300);
-  };
-
-  // -------------------------------
-  // IMEI VALIDATION
-  // -------------------------------
-
-  const validImei = (value) => {
-    return /^\d{15}$/.test(value) && luhn(value);
-  };
-
-  function luhn(value) {
-    let sum = 0;
-
-    for (let i = 0; i < value.length; i++) {
-      let n = Number(
-        value[value.length - 1 - i]
-      );
-
-      if (i % 2 === 1) {
-        n *= 2;
-
-        if (n > 9) {
-          n -= 9;
-        }
-      }
-
-      sum += n;
+    if (i % 2 === 1) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
     }
 
-    return sum % 10 === 0;
+    sum += digit;
   }
 
-  // -------------------------------
-  // MASK IMEI
-  // -------------------------------
+  return sum % 10 === 0;
+}
 
-  const maskImei = (value) => {
-    return "•••••••••••" + value.slice(-4);
-  };
+function makeRequestId() {
+  requestCounter++;
+  const datePart = Date.now().toString().slice(-6);
+  return `SU-${datePart}-${String(requestCounter).padStart(3, "0")}`;
+}
 
-  // -------------------------------
-  // AUTOMATIC SESSION HISTORY
-  // COMPLETED DEMO CHECKS ONLY
-  // -------------------------------
+function renderHistory() {
+  if (!historyRecords.length) {
+    historyBody.innerHTML = `
+      <tr class="empty-row">
+        <td colspan="5">No requests have been submitted.</td>
+      </tr>
+    `;
+    updateStats();
+    return;
+  }
 
-  function addHistory(brand, imei) {
-    const tbody = $("historyBody");
+  historyBody.innerHTML = "";
 
+  historyRecords.forEach((record) => {
     const row = document.createElement("tr");
 
-    const currentId =
-      `#SU-${String(requestId++).padStart(4, "0")}`;
-
-    const maskedImei = maskImei(imei);
-
     const values = [
-      currentId,
-      `${brand || "Unknown"} · Demo`,
-      maskedImei,
-      "Completed",
-      timeNow()
+      record.id,
+      record.device,
+      record.imei,
+      record.date
     ];
 
     values.forEach((value, index) => {
-      const td = document.createElement("td");
+      const cell = document.createElement("td");
+      cell.textContent = value;
 
-      if (index === 0) {
-        const bold = document.createElement("b");
-
-        bold.textContent = value;
-
-        td.appendChild(bold);
-      } else if (index === 3) {
-        const status = document.createElement("span");
-
-        status.className = "status-chip success";
-
-        status.textContent = "Completed";
-
-        td.appendChild(status);
-      } else {
-        td.textContent = value;
-      }
-
-      row.appendChild(td);
+      if (index === 0) cell.className = "request-id";
+      row.appendChild(cell);
     });
 
-    // Add newest completed entry at the top.
-    tbody.prepend(row);
+    const statusCell = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.className = "status-badge";
+    badge.textContent = record.status;
+    statusCell.appendChild(badge);
+    row.appendChild(statusCell);
 
-    // Keep the latest 10 entries visible.
-    while (tbody.children.length > 10) {
-      tbody.lastElementChild.remove();
-    }
-  }
-
-  // -------------------------------
-  // IMEI INPUT
-  // -------------------------------
-
-  imeiInput.addEventListener("input", () => {
-    imeiInput.value = imeiInput.value
-      .replace(/\D/g, "")
-      .slice(0, 15);
+    historyBody.appendChild(row);
   });
 
-  // -------------------------------
-  // PASTE IMEI
-  // -------------------------------
+  updateStats();
+}
 
-  $("pasteBtn").addEventListener(
-    "click",
-    async () => {
-      try {
-        const text =
-          await navigator.clipboard.readText();
+function addHistory(request, status) {
+  historyRecords.unshift({
+    id: request.id,
+    device: `${request.brand} ${request.model}`,
+    imei: maskImei(request.imei),
+    date: getDate(),
+    status
+  });
 
-        imeiInput.value = text
-          .replace(/\D/g, "")
-          .slice(0, 15);
+  historyRecords = historyRecords.slice(0, 10);
+  renderHistory();
+}
 
-        toast(
-          "IMEI pasted",
-          "Clipboard content inserted."
-        );
-      } catch {
-        toast(
-          "Clipboard unavailable",
-          "Paste the IMEI manually.",
-          "error"
-        );
-      }
-    }
-  );
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-  // -------------------------------
-  // DEMO CHECK FORM
-  // -------------------------------
+async function runDemo(request) {
+  const stages = [
+    ["Request accepted by demo interface", "success"],
+    ["Validating submitted device information", ""],
+    ["Checking IMEI format and checksum", ""],
+    ["Preparing simulated service session", ""],
+    ["Running local eligibility simulation", ""],
+    ["Generating demo service report", ""]
+  ];
 
-  form.addEventListener(
-    "submit",
-    (event) => {
-      event.preventDefault();
+  logStatus.textContent = `Processing ${request.id}`;
 
-      const imei = imeiInput.value.trim();
+  for (let i = 0; i < stages.length; i++) {
+    const [message, type] = stages[i];
 
-      const brand = $("brand").value;
-
-      const service = $("service").value;
-
-      // Validate IMEI.
-      if (!validImei(imei)) {
-        addLog(
-          "IMEI validation failed. Enter a valid 15-digit IMEI.",
-          "error"
-        );
-
-        toast(
-          "Invalid IMEI",
-          "Check the 15 digits and try again.",
-          "error"
-        );
-
-        imeiInput.focus();
-
-        return;
-      }
-
-      // Validate brand.
-      if (!brand) {
-        toast(
-          "Choose a brand",
-          "Select the phone brand before continuing.",
-          "error"
-        );
-
-        $("brand").focus();
-
-        return;
-      }
-
-      const button =
-        form.querySelector(".primary-btn");
-
-      button.disabled = true;
-
-      button.innerHTML =
-        '<span>◌</span> RUNNING DEMO CHECK <b>…</b>';
-
-      $("resultCard").classList.add("hidden");
-
-      requestCount++;
-
-      $("requestCount").textContent =
-        requestCount.toLocaleString();
-
-      addLog(
-        `Starting ${service.toLowerCase()} for ${brand} device.`,
-        "info"
-      );
-
-      toast(
-        "Request started",
-        "SMART UNLOCK is running a local demo."
-      );
-
-      // Demo workflow.
-      const messages = [
-        [
-          "Connecting to demo service...",
-          "info"
-        ],
-        [
-          "Checking IMEI format and checksum...",
-          "info"
-        ],
-        [
-          "Device information request simulated.",
-          "warn"
-        ],
-        [
-          "Demo workflow finished. No phone was unlocked or modified.",
-          "ok"
-        ]
-      ];
-
-      messages.forEach(
-        ([message, type], index) => {
-          window.setTimeout(() => {
-            addLog(message, type);
-
-            // Finish demo.
-            if (
-              index === messages.length - 1
-            ) {
-              button.disabled = false;
-
-              button.innerHTML =
-                '<span>▶</span> RUN DEMO CHECK <b>→</b>';
-
-              $("resultTitle").textContent =
-                "Demo check completed";
-
-              $("resultSub").textContent =
-                "No device was unlocked or changed.";
-
-              $("resultImei").textContent = imei;
-
-              $("resultCard")
-                .classList.remove("hidden");
-
-              // Automatically add completed history.
-              addHistory(brand, imei);
-
-              toast(
-                "Demo completed",
-                `IMEI ${maskImei(imei)} — preview only.`,
-                "ok"
-              );
-            }
-          }, (index + 1) * 750);
-        }
-      );
-    }
-  );
-
-  // -------------------------------
-  // COPY RESULT
-  // -------------------------------
-
-  $("copyResult").addEventListener(
-    "click",
-    async () => {
-      const value =
-        `SMART UNLOCK — DEMO RESULT\n` +
-        `IMEI: ${$("resultImei").textContent}\n` +
-        `Status: Demo check completed\n` +
-        `No device was unlocked or modified.`;
-
-      try {
-        await navigator.clipboard.writeText(value);
-
-        toast(
-          "Result copied",
-          "Demo report copied to clipboard.",
-          "ok"
-        );
-      } catch {
-        toast(
-          "Copy unavailable",
-          "Copy the report manually.",
-          "error"
-        );
-      }
-    }
-  );
-
-  // -------------------------------
-  // COPY LOGS
-  // -------------------------------
-
-  $("copyLogs").addEventListener(
-    "click",
-    async () => {
-      const value = [
-        ...logLines.querySelectorAll("p")
-      ]
-        .map((p) => p.innerText)
-        .join("\n");
-
-      try {
-        await navigator.clipboard.writeText(value);
-
-        toast(
-          "Logs copied",
-          "Console output copied.",
-          "ok"
-        );
-      } catch {
-        toast(
-          "Copy unavailable",
-          "Clipboard access is unavailable.",
-          "error"
-        );
-      }
-    }
-  );
-
-  // -------------------------------
-  // CLEAR LOGS
-  // -------------------------------
-
-  $("clearLogs").addEventListener(
-    "click",
-    () => {
-      logLines.replaceChildren();
-
-      addLog(
-        "Console cleared. Waiting for input...",
-        "info"
-      );
-
-      toast(
-        "Logs cleared",
-        "The local console has been cleared."
-      );
-    }
-  );
-
-  // -------------------------------
-  // NOTIFICATION PANEL
-  // -------------------------------
-
-  $("notifyBtn").addEventListener(
-    "click",
-    () => {
-      $("notificationPop")
-        .classList.toggle("hidden");
-    }
-  );
-
-  // -------------------------------
-  // MOBILE NAVIGATION
-  // -------------------------------
-
-  $("menuBtn").addEventListener(
-    "click",
-    () => {
-      document
-        .querySelector(".sidebar")
-        .classList.toggle("open");
-    }
-  );
-
-  document.addEventListener(
-    "click",
-    (event) => {
-      if (
-        event.target.closest(".nav-item") &&
-        window.innerWidth <= 700
-      ) {
-        document
-          .querySelector(".sidebar")
-          .classList.remove("open");
-      }
-    }
-  );
-
-  // -------------------------------
-  // INITIALIZATION
-  // -------------------------------
+    addLog(`[${request.id}] ${message}`, type);
+    await sleep(900 + Math.random() * 500);
+  }
 
   addLog(
-    "SMART UNLOCK initialized.",
-    "ok"
+    `[${request.id}] Demo completed — no device was unlocked or changed.`,
+    "warning"
   );
 
-  addLog(
-    "Demo mode active. No external service connected.",
-    "info"
-  );
+  logStatus.textContent = "Demo request completed";
+  activeRequests--;
+  completedRequests++;
 
-})();
+  addHistory(request, "DEMO COMPLETE");
+  updateStats();
+
+  submitBtn.disabled = false;
+  submitBtn.innerHTML = "<span>Start Request</span><span>→</span>";
+
+  showToast("Demo request completed.");
+}
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const brand = brandInput.value.trim();
+  const model = modelInput.value.trim();
+  const imei = imeiInput.value.trim();
+  const service = serviceInput.value;
+
+  if (!brand || !model || !imei) {
+    showToast("Please complete all required fields.");
+    return;
+  }
+
+  if (!isValidImei(imei)) {
+    showToast("Enter a valid 15-digit IMEI.");
+    addLog("Request rejected: IMEI format/checksum validation failed.", "error");
+    return;
+  }
+
+  const request = {
+    id: makeRequestId(),
+    brand,
+    model,
+    imei,
+    service
+  };
+
+  currentRequest = request;
+  activeRequests++;
+  updateStats();
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = "<span>Processing Demo...</span><span>⌁</span>";
+
+  addLog(`New demo request created: ${request.id}`, "success");
+  addLog(`Device: ${brand} ${model}`);
+  addLog(`Service: ${service}`);
+  addLog(`IMEI: ${maskImei(imei)}`);
+  addLog("Simulation started. No external service is contacted.", "warning");
+
+  await runDemo(request);
+});
+
+$("#clearLogs").addEventListener("click", () => {
+  clearLogs();
+  showToast("Activity logs cleared.");
+});
+
+$("#pasteBtn").addEventListener("click", async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    imeiInput.value = text.replace(/\D/g, "").slice(0, 15);
+    showToast("IMEI pasted.");
+  } catch {
+    showToast("Clipboard access unavailable. Paste manually.");
+  }
+});
+
+imeiInput.addEventListener("input", () => {
+  imeiInput.value = imeiInput.value.replace(/\D/g, "").slice(0, 15);
+});
+
+$("#menuBtn").addEventListener("click", () => {
+  $("#sidebar").classList.toggle("open");
+});
+
+document.querySelectorAll(".nav-item").forEach((item) => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach((nav) => {
+      nav.classList.remove("active");
+    });
+
+    item.classList.add("active");
+    $("#sidebar").classList.remove("open");
+  });
+});
+
+updateStats();
